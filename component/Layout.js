@@ -16,6 +16,13 @@ export default class Layout extends React.Component {
                 p {
                     margin:0;
                 }
+                a {
+                    color:#00fff3;
+                    text-decoration:none;
+                }
+                a:hover {
+                    text-decoration:underline;
+                }
                 `}</style>
             </div>
         )
