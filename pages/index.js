@@ -21,7 +21,6 @@ export default class Index extends React.Component {
         )
     }
     componentDidMount () {
-      console.log(window.location.search)
         if (window.localStorage.getItem("id") == null) {
           window.localStorage.setItem("id", Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15));
         }
@@ -33,6 +32,7 @@ export default class Index extends React.Component {
             window.localStorage.setItem("name",name)
         }
         this.socket = io();
+        this.socket.emit("person",{"name":window.localStorage.getItem("name"),"room":window.location.search})
         document.getElementById("sendButton").onclick = () => {
             if (document.getElementById("text").value != "") {
                 this.socket.emit("message",{text:document.getElementById("text").value,"name":window.localStorage.getItem("name"),"id":window.localStorage.getItem("id"),"room":window.location.search})
@@ -48,7 +48,6 @@ export default class Index extends React.Component {
             }
         }, false);
         this.socket.on("new", (data) => {
-          console.log(data)
             if (window.location.search == data.room) {
               if (data.id == window.localStorage.getItem("id")) {
                   var chat = (
@@ -67,6 +66,18 @@ export default class Index extends React.Component {
               buff.push(chat);
               this.setState({"chat":buff});
               window.scrollTo(0,document.body.scrollHeight);
+            }
+        })
+        this.socket.on("newper", (data) => {
+            if (window.location.search == data.room) {
+                var chat = (
+                    <div style={{display:"flex",height:"50px"}}>
+                        <p style={{margin:"auto",color:"green"}}>{data.name+" has joined the room!"}</p>
+                    </div>
+                )
+                var buff = this.state.chat;
+                buff.push(chat);
+                this.setState({"chat":buff});
             }
         })
     }

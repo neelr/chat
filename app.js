@@ -9,6 +9,9 @@ const server = next({ dev })
 const handle = server.getRequestHandler()
 
 io.on("connection",(socket) => {
+    socket.on("person", (data) => {
+      io.sockets.emit("newper",data);
+    })
     socket.on("message", (data) => {
         io.sockets.emit("new",data);
     })
