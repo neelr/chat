@@ -21,6 +21,10 @@ export default class Index extends React.Component {
         )
     }
     componentDidMount () {
+      console.log(window.location.search)
+        if (window.localStorage.getItem("id") == null) {
+          window.localStorage.setItem("id", Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15));
+        }
         if (window.localStorage.getItem("name") == null) {
             var name = "";
             while (name == "") {
@@ -31,36 +35,39 @@ export default class Index extends React.Component {
         this.socket = io();
         document.getElementById("sendButton").onclick = () => {
             if (document.getElementById("text").value != "") {
-                this.socket.emit("message",{text:document.getElementById("text").value,"name":window.localStorage.getItem("name")})
+                this.socket.emit("message",{text:document.getElementById("text").value,"name":window.localStorage.getItem("name"),"id":window.localStorage.getItem("id"),"room":window.location.search})
             }
             document.getElementById("text").value = "";
         }
         window.addEventListener('keypress', (e) => {
             if (e.keyCode == 13) {
                 if (document.getElementById("text").value != "") {
-                    this.socket.emit("message",{text:document.getElementById("text").value,"name":window.localStorage.getItem("name")})
+                    this.socket.emit("message",{text:document.getElementById("text").value,"name":window.localStorage.getItem("name"),"id":window.localStorage.getItem("id"),"room":window.location.search})
                 }
                 document.getElementById("text").value = "";
             }
         }, false);
         this.socket.on("new", (data) => {
-            if (data.name == window.localStorage.getItem("name")) {
-                var chat = (
-                    <div style={{display:"flex"}}>
-                        <p style={{margin:"10px",borderRadius:"10px",marginLeft:"auto",backgroundColor:"blue",padding:"10px",maxWidth:"40vw",wordWrap:"break-word"}}>{data.name+": "+data.text}</p>
-                    </div>
-                )
-            } else {
-                var chat = (
-                    <div style={{display:"flex"}}>
-                        <p style={{margin:"10px",borderRadius:"10px",marginRight:"auto",backgroundColor:"grey",padding:"10px",maxWidth:"40vw",wordWrap:"break-word"}}>{data.name+": "+data.text}</p>
-                    </div>
-                )
+          console.log(data)
+            if (window.location.search == data.room) {
+              if (data.id == window.localStorage.getItem("id")) {
+                  var chat = (
+                      <div style={{display:"flex"}}>
+                          <p style={{margin:"10px",borderRadius:"10px",marginLeft:"auto",backgroundColor:"blue",padding:"10px",maxWidth:"40vw",wordWrap:"break-word"}}>{data.name+": "+data.text}</p>
+                      </div>
+                  )
+              } else {
+                  var chat = (
+                      <div style={{display:"flex"}}>
+                          <p style={{margin:"10px",borderRadius:"10px",marginRight:"auto",backgroundColor:"grey",padding:"10px",maxWidth:"40vw",wordWrap:"break-word"}}>{data.name+": "+data.text}</p>
+                      </div>
+                  )
+              }
+              var buff = this.state.chat;
+              buff.push(chat);
+              this.setState({"chat":buff});
+              window.scrollTo(0,document.body.scrollHeight);
             }
-            var buff = this.state.chat;
-            buff.push(chat);
-            this.setState({"chat":buff});
-            window.scrollTo(0,document.body.scrollHeight);
         })
     }
 }
