@@ -11,11 +11,11 @@ export default class Index extends React.Component {
     render () {
         return (
             <Layout>
-                <div style={{display:"flex",position:"fixed",width:"100vw",height:"50px", backgroundColor:"#203d59"}}>
+                <div style={{display:"flex",position:"fixed",width:"100vw",height:"50px", backgroundColor:"#203d59",top:0}}>
                     <p style={{margin:"auto"}} id="type"></p>
                 </div>
-                <div style={{display:"flex",flexDirection:"column",height:"100%"}} id="main">
-                    <div style={{display:"flex",flexDirection:"column",marginTop:"auto"}}>
+                <div style={{height:"100%",display:"flex",flexDirection:"column"}} id="main">
+                    <div id="chat" style={{display:"flex",flexDirection:"column",marginTop:"auto",overflow:"auto"}}>
                         {this.state.chat}
                     </div>
                     <div>
@@ -74,8 +74,8 @@ export default class Index extends React.Component {
             if (window.location.search == data.room) {
               if (data.id == window.localStorage.getItem("id")) {
                   var chat = (
-                      <div style={{display:"flex"}}>
-                          <div style={{margin:"10px",borderRadius:"10px",marginLeft:"auto",backgroundColor:"blue",padding:"10px",maxWidth:"40vw",wordWrap:"break-word"}} dangerouslySetInnerHTML={{__html:mark(data.name+": "+emoji.emojify(data.text, onMissing))}}></div>
+                      <div style={{marginLeft:"auto",maxWidth:"40vw"}}>
+                          <div style={{margin:"10px",borderRadius:"10px",backgroundColor:"blue",padding:"10px",wordWrap:"break-word",display:"block"}} dangerouslySetInnerHTML={{__html:mark(data.name+": "+emoji.emojify(data.text, onMissing))}}></div>
                       </div>
                   )
               } else {
@@ -83,15 +83,15 @@ export default class Index extends React.Component {
                       new Notification(data.name+": "+data.text)
                   }
                   var chat = (
-                      <div style={{display:"flex"}}>
-                          <p style={{margin:"10px",borderRadius:"10px",marginRight:"auto",backgroundColor:"grey",padding:"10px",maxWidth:"40vw",wordWrap:"break-word"}} dangerouslySetInnerHTML={{__html:mark(data.name+": "+emoji.emojify(data.text, onMissing))}}></p>
+                      <div style={{marginRight:"auto",maxWidth:"40vw"}}>
+                          <p style={{margin:"10px",borderRadius:"10px",backgroundColor:"grey",padding:"10px",wordWrap:"break-word",display:"block"}} dangerouslySetInnerHTML={{__html:mark(data.name+": "+emoji.emojify(data.text, onMissing))}}></p>
                       </div>
                   )
               }
               var buff = this.state.chat;
               buff.push(chat);
               this.setState({"chat":buff});
-              window.scrollTo(0,document.body.scrollHeight);
+              document.getElementById("chat").scrollTo(0,document.getElementById("chat").scrollHeight);
             }
         })
         this.socket.on("newper", (data) => {
