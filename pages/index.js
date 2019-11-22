@@ -9,7 +9,7 @@ export default class Index extends React.Component {
     render () {
         return (
             <Layout>
-                <div style={{display:"flex",flexDirection:"column",height:"100%"}}>
+                <div style={{display:"flex",flexDirection:"column",height:"100%"}} id="main">
                     <div style={{display:"flex",flexDirection:"column",marginTop:"auto"}}>
                         {this.state.chat}
                     </div>
@@ -22,7 +22,11 @@ export default class Index extends React.Component {
     }
     componentDidMount () {
         if (window.localStorage.getItem("name") == null) {
-            window.location = "/setname";
+            var name = "";
+            while (name == "") {
+              name = prompt("Please enter a nickname!","John Doe");
+            }
+            window.localStorage.setItem("name",name)
         }
         this.socket = io();
         document.getElementById("sendButton").onclick = () => {
@@ -43,19 +47,20 @@ export default class Index extends React.Component {
             if (data.name == window.localStorage.getItem("name")) {
                 var chat = (
                     <div style={{display:"flex"}}>
-                        <p style={{marginLeft:"auto",backgroundColor:"blue",padding:"10px",maxWidth:"40vw",wordWrap:"break-word"}}>{data.name+": "+data.text}</p>
+                        <p style={{margin:"10px",borderRadius:"10px",marginLeft:"auto",backgroundColor:"blue",padding:"10px",maxWidth:"40vw",wordWrap:"break-word"}}>{data.name+": "+data.text}</p>
                     </div>
                 )
             } else {
                 var chat = (
                     <div style={{display:"flex"}}>
-                        <p style={{marginRight:"auto",backgroundColor:"grey",padding:"10px",maxWidth:"40vw",wordWrap:"break-word"}}>{data.name+": "+data.text}</p>
+                        <p style={{margin:"10px",borderRadius:"10px",marginRight:"auto",backgroundColor:"grey",padding:"10px",maxWidth:"40vw",wordWrap:"break-word"}}>{data.name+": "+data.text}</p>
                     </div>
                 )
             }
             var buff = this.state.chat;
             buff.push(chat);
             this.setState({"chat":buff});
+            window.scrollTo(0,document.body.scrollHeight);
         })
     }
 }
