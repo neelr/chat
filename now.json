@@ -1,0 +1,12 @@
+{
+    "name": "kek-chat",
+    "version": 2,
+    "env": {
+        "NODE_ENV":"production"
+    },
+    "builds": [
+        { "src": "/pages/*", "use": "@now/static" },
+        { "src": "/app.js", "use": "@now/node" }
+      ],
+      "routes": [{ "src": "/.*", "methods": ["GET"], "dest": "/app.js" },{"src": "/.*", "methods": ["POST"], "dest": "/app.js" }]
+}
