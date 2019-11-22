@@ -21,6 +21,14 @@ export default class ChatBar extends React.Component {
                 button:active {
                     background-color:#0c4759;
                 }
+                @media screen and (max-width:624px) {
+                    input {
+                        width:60vw;
+                    }
+                    button {
+                        width:40vw;
+                    }
+                }
                 `}</style>
             </div>
         )

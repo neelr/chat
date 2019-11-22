@@ -9,6 +9,9 @@ export default class Index extends React.Component {
     render () {
         return (
             <Layout>
+                <div style={{position:"fixed",width:"100vw",height:"50px", backgroundColor:"#203d59",textAlign:"center"}}>
+                    <p id="type"></p>
+                </div>
                 <div style={{display:"flex",flexDirection:"column",height:"100%"}} id="main">
                     <div style={{display:"flex",flexDirection:"column",marginTop:"auto"}}>
                         {this.state.chat}
@@ -21,7 +24,10 @@ export default class Index extends React.Component {
         )
     }
     componentDidMount () {
-      console.log(window.location.search)
+        if (window.location.search == "?lounge") {
+            window.location = "/";
+        }
+        document.getElementById("type").innerHTML = window.location.search != "" ? window.location.search.split("?")[1] : "lounge";
         if (window.localStorage.getItem("id") == null) {
           window.localStorage.setItem("id", Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15));
         }
@@ -33,6 +39,7 @@ export default class Index extends React.Component {
             window.localStorage.setItem("name",name)
         }
         this.socket = io();
+        this.socket.emit("person",{"name":window.localStorage.getItem("name"),"room":window.location.search})
         document.getElementById("sendButton").onclick = () => {
             if (document.getElementById("text").value != "") {
                 this.socket.emit("message",{text:document.getElementById("text").value,"name":window.localStorage.getItem("name"),"id":window.localStorage.getItem("id"),"room":window.location.search})
@@ -48,7 +55,6 @@ export default class Index extends React.Component {
             }
         }, false);
         this.socket.on("new", (data) => {
-          console.log(data)
             if (window.location.search == data.room) {
               if (data.id == window.localStorage.getItem("id")) {
                   var chat = (
@@ -67,6 +73,18 @@ export default class Index extends React.Component {
               buff.push(chat);
               this.setState({"chat":buff});
               window.scrollTo(0,document.body.scrollHeight);
+            }
+        })
+        this.socket.on("newper", (data) => {
+            if (window.location.search == data.room) {
+                var chat = (
+                    <div style={{display:"flex",height:"50px"}}>
+                        <p style={{margin:"auto",color:"green"}}>{data.name+" has joined the room!"}</p>
+                    </div>
+                )
+                var buff = this.state.chat;
+                buff.push(chat);
+                this.setState({"chat":buff});
             }
         })
     }
