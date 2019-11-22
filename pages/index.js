@@ -24,6 +24,7 @@ export default class Index extends React.Component {
         )
     }
     componentDidMount () {
+        Notification.requestPermission();
         if (window.location.search == "?lounge") {
             window.location = "/";
         }
@@ -73,6 +74,9 @@ export default class Index extends React.Component {
                       </div>
                   )
               } else {
+                  if (document.hidden && Notification.permission === "granted") {
+                      new Notification(data.name+": "+data.text)
+                  }
                   var chat = (
                       <div style={{display:"flex"}}>
                           <p style={{margin:"10px",borderRadius:"10px",marginRight:"auto",backgroundColor:"grey",padding:"10px",maxWidth:"40vw",wordWrap:"break-word"}}>{data.name+": "+data.text}</p>
