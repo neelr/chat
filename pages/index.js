@@ -29,7 +29,9 @@ export default class Index extends React.Component {
         var onMissing = function (name) {
             return name;
         };
+    if ("Notification" in window) {
         Notification.requestPermission();
+    }
         if (window.location.search == "?lounge") {
             window.location = "/";
         }
@@ -79,9 +81,10 @@ export default class Index extends React.Component {
                       </div>
                   )
               } else {
+                  if ("Notification" in window) {
                   if (document.hidden && Notification.permission === "granted") {
                       new Notification(data.name+": "+data.text)
-                  }
+                  }}
                   var chat = (
                       <div style={{marginRight:"auto",maxWidth:"40vw"}}>
                           <p style={{margin:"10px",borderRadius:"10px",backgroundColor:"grey",padding:"10px",wordWrap:"break-word",display:"block"}} dangerouslySetInnerHTML={{__html:mark(data.name+": "+emoji.emojify(data.text, onMissing))}}></p>
