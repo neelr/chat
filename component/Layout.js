@@ -2,7 +2,7 @@ export default class Layout extends React.Component {
     render () {
         return (
             <div style={{height:"100%"}}>
-                <title>Kek Chat 2.0</title>
+                <title>chat</title>
                 {this.props.children}
                 <style jsx global>{`
                 @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700,800&display=swap');
