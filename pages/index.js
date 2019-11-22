@@ -84,7 +84,7 @@ export default class Index extends React.Component {
                   }
                   var chat = (
                       <div style={{display:"flex"}}>
-                          <p style={{margin:"10px",borderRadius:"10px",marginRight:"auto",backgroundColor:"grey",padding:"10px",maxWidth:"40vw",wordWrap:"break-word"}}>{data.name+": "+ mark(emoji.emojify(data.text, onMissing))}</p>
+                          <p style={{margin:"10px",borderRadius:"10px",marginRight:"auto",backgroundColor:"grey",padding:"10px",maxWidth:"40vw",wordWrap:"break-word"}} dangerouslySetInnerHTML={{__html:mark(data.name+": "+emoji.emojify(data.text, onMissing))}}></p>
                       </div>
                   )
               }
