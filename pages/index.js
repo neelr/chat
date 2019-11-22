@@ -39,6 +39,16 @@ export default class Index extends React.Component {
             window.localStorage.setItem("name",name)
         }
         this.socket = io();
+        document.getElementById("type").onclick =  () => {
+            this.socket.disconnect();
+            var name = "";
+            while (name == "") {
+              name = prompt("Please enter a nickname!","John Doe");
+            }
+            window.localStorage.setItem("name",name)
+            this.socket.connect();
+            this.socket.emit("person",{"name":window.localStorage.getItem("name"),"room":window.location.search})
+        }
         this.socket.emit("person",{"name":window.localStorage.getItem("name"),"room":window.location.search})
         document.getElementById("sendButton").onclick = () => {
             if (document.getElementById("text").value != "") {
