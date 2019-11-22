@@ -1,6 +1,8 @@
 import io from "socket.io-client";
 import Layout from "../component/Layout";
 import ChatBar from "../component/ChatBar";
+import emoji from "node-emoji";
+import mark  from "marked";
 
 export default class Index extends React.Component {
     state = {
@@ -9,8 +11,8 @@ export default class Index extends React.Component {
     render () {
         return (
             <Layout>
-                <div style={{position:"fixed",width:"100vw",height:"50px", backgroundColor:"#203d59",textAlign:"center"}}>
-                    <p id="type"></p>
+                <div style={{display:"flex",position:"fixed",width:"100vw",height:"50px", backgroundColor:"#203d59"}}>
+                    <p style={{margin:"auto"}} id="type"></p>
                 </div>
                 <div style={{display:"flex",flexDirection:"column",height:"100%"}} id="main">
                     <div style={{display:"flex",flexDirection:"column",marginTop:"auto"}}>
@@ -24,6 +26,9 @@ export default class Index extends React.Component {
         )
     }
     componentDidMount () {
+        var onMissing = function (name) {
+            return name;
+        };
         Notification.requestPermission();
         if (window.location.search == "?lounge") {
             window.location = "/";
@@ -70,7 +75,7 @@ export default class Index extends React.Component {
               if (data.id == window.localStorage.getItem("id")) {
                   var chat = (
                       <div style={{display:"flex"}}>
-                          <p style={{margin:"10px",borderRadius:"10px",marginLeft:"auto",backgroundColor:"blue",padding:"10px",maxWidth:"40vw",wordWrap:"break-word"}}>{data.name+": "+data.text}</p>
+                          <div style={{margin:"10px",borderRadius:"10px",marginLeft:"auto",backgroundColor:"blue",padding:"10px",maxWidth:"40vw",wordWrap:"break-word"}} dangerouslySetInnerHTML={{__html:mark(data.name+": "+emoji.emojify(data.text, onMissing))}}></div>
                       </div>
                   )
               } else {
@@ -79,7 +84,7 @@ export default class Index extends React.Component {
                   }
                   var chat = (
                       <div style={{display:"flex"}}>
-                          <p style={{margin:"10px",borderRadius:"10px",marginRight:"auto",backgroundColor:"grey",padding:"10px",maxWidth:"40vw",wordWrap:"break-word"}}>{data.name+": "+data.text}</p>
+                          <p style={{margin:"10px",borderRadius:"10px",marginRight:"auto",backgroundColor:"grey",padding:"10px",maxWidth:"40vw",wordWrap:"break-word"}}>{data.name+": "+ mark(emoji.emojify(data.text, onMissing))}</p>
                       </div>
                   )
               }

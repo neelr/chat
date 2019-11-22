@@ -13,6 +13,9 @@ export default class Layout extends React.Component {
                     background-color:#333639;
                     color:white;
                 }
+                p {
+                    margin:0;
+                }
                 `}</style>
             </div>
         )
