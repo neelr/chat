@@ -9,6 +9,9 @@ export default class Index extends React.Component {
     render () {
         return (
             <Layout>
+                <div style={{position:"fixed",width:"100vw",height:"50px", backgroundColor:"#203d59",textAlign:"center"}}>
+                    <p id="type"></p>
+                </div>
                 <div style={{display:"flex",flexDirection:"column",height:"100%"}} id="main">
                     <div style={{display:"flex",flexDirection:"column",marginTop:"auto"}}>
                         {this.state.chat}
@@ -21,6 +24,10 @@ export default class Index extends React.Component {
         )
     }
     componentDidMount () {
+        if (window.location.search == "?lounge") {
+            window.location = "/";
+        }
+        document.getElementById("type").innerHTML = window.location.search != "" ? window.location.search.split("?")[1] : "lounge";
         if (window.localStorage.getItem("id") == null) {
           window.localStorage.setItem("id", Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15));
         }
