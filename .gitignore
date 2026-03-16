@@ -86,3 +86,14 @@ typings/
 
 # DynamoDB Local files
 .dynamodb/
+
+# Wrangler
+.wrangler/
+.dev.vars
+
+# Claude Code
+.claude/
+
+# Environment files
+.env.local
+.env.production
