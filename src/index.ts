@@ -152,14 +152,9 @@ const HTML = `<!DOCTYPE html>
 
 <script>
 (async () => {
-  // --- Crypto identity ---
-  const keyPair = await crypto.subtle.generateKey(
-    { name: "ECDSA", namedCurve: "P-256" },
-    true,
-    ["sign", "verify"]
-  );
+  // --- Crypto identity (Ed25519 — no NIST, no unexplained seeds) ---
+  const keyPair = await crypto.subtle.generateKey("Ed25519", true, ["sign", "verify"]);
   const pubKeyRaw = await crypto.subtle.exportKey("raw", keyPair.publicKey);
-  const pubKeyJwk = await crypto.subtle.exportKey("jwk", keyPair.publicKey);
   const hashBuf = await crypto.subtle.digest("SHA-256", pubKeyRaw);
   const hashArr = Array.from(new Uint8Array(hashBuf));
   const myId = hashArr.map(b => b.toString(16).padStart(2, "0")).join("").slice(0, 12);
@@ -212,12 +207,12 @@ const HTML = `<!DOCTYPE html>
 
   async function importPubKey(b64) {
     const raw = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
-    return crypto.subtle.importKey("raw", raw, { name: "ECDSA", namedCurve: "P-256" }, true, ["verify"]);
+    return crypto.subtle.importKey("raw", raw, "Ed25519", true, ["verify"]);
   }
 
   async function signMessage(text) {
     const enc = new TextEncoder().encode(text);
-    const sig = await crypto.subtle.sign({ name: "ECDSA", hash: "SHA-256" }, keyPair.privateKey, enc);
+    const sig = await crypto.subtle.sign("Ed25519", keyPair.privateKey, enc);
     return btoa(String.fromCharCode(...new Uint8Array(sig)));
   }
 
@@ -225,7 +220,7 @@ const HTML = `<!DOCTYPE html>
     try {
       const sig = Uint8Array.from(atob(sigB64), c => c.charCodeAt(0));
       const enc = new TextEncoder().encode(text);
-      return crypto.subtle.verify({ name: "ECDSA", hash: "SHA-256" }, pubKey, sig, enc);
+      return crypto.subtle.verify("Ed25519", pubKey, sig, enc);
     } catch { return false; }
   }
 
